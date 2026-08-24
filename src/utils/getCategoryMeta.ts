@@ -1,4 +1,4 @@
-import type { Category } from '../types/category.types';
+import type { Category } from '@models/category.types';
 
 export interface CategoryMeta {
   label: string;

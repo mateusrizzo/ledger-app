@@ -7,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, radius, spacing, typography } from '../../theme';
+import { theme } from '@theme';
 
 export interface CardAction {
   label: string;
@@ -47,23 +47,23 @@ export function Card({ title, action, children, style }: CardProps): React.JSX.E
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.lg,
+    padding: theme.spacing.lg,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: spacing.lg,
+    marginBottom: theme.spacing.lg,
   },
   title: {
-    ...typography.cardTitle,
-    color: colors.text.primary,
+    ...theme.typography.cardTitle,
+    color: theme.colors.text.primary,
   },
   action: {
-    ...typography.cardAction,
-    color: colors.text.link,
+    ...theme.typography.cardAction,
+    color: theme.colors.text.link,
     textDecorationLine: 'underline',
   },
 });

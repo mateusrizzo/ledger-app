@@ -7,7 +7,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { HomeScreen } from './src/screens/Home/HomeScreen';
+import { HomeScreen } from '@screens/Home/HomeScreen';
 
 const queryClient = new QueryClient();
 
