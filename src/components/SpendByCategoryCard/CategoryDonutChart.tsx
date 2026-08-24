@@ -18,8 +18,8 @@ export interface CategoryDonutChartProps {
   strokeWidth?: number;
 }
 
-const DEFAULT_SIZE = 156;
-const DEFAULT_STROKE_WIDTH = 20;
+const DEFAULT_SIZE = 180;
+const DEFAULT_STROKE_WIDTH = 24;
 
 export function CategoryDonutChart({
   segments,
