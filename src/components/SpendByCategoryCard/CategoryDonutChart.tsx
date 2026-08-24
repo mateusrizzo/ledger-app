@@ -18,8 +18,8 @@ export interface CategoryDonutChartProps {
   strokeWidth?: number;
 }
 
-const DEFAULT_SIZE = 128;
-const DEFAULT_STROKE_WIDTH = 18;
+const DEFAULT_SIZE = 156;
+const DEFAULT_STROKE_WIDTH = 20;
 
 export function CategoryDonutChart({
   segments,
@@ -82,10 +82,13 @@ const styles = StyleSheet.create({
   },
   centerLabel: {
     ...theme.typography.caption,
+    fontSize: 14,
     color: theme.colors.text.secondary,
   },
   centerValue: {
     ...theme.typography.amountMedium,
+    fontSize: 20,
+    lineHeight: 24,
     color: theme.colors.text.primary,
   },
 });
