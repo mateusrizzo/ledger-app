@@ -19,6 +19,7 @@ const TRANSACTIONS_RESPONSE = {
       id: 'txn-grocery-store',
       merchant: 'Grocery Store',
       categoryId: 'food-dining',
+      accountId: 'checking',
       amountCents: -8540,
       date: '2026-08-25T10:00:00.000Z',
     },

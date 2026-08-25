@@ -4,10 +4,11 @@
  * @format
  */
 
+import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { HomeScreen } from '@screens/Home/HomeScreen';
+import { RootNavigator } from '@navigation/RootNavigator';
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <HomeScreen />
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
       </SafeAreaProvider>
     </QueryClientProvider>
   );

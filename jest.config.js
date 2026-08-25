@@ -1,5 +1,8 @@
 module.exports = {
   preset: '@react-native/jest-preset',
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-navigation|react-native-screens)/)',
+  ],
   moduleNameMapper: {
     '^@screens$': '<rootDir>/src/screens',
     '^@screens/(.*)$': '<rootDir>/src/screens/$1',
@@ -15,5 +18,7 @@ module.exports = {
     '^@models/(.*)$': '<rootDir>/src/types/$1',
     '^@utils$': '<rootDir>/src/utils',
     '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@navigation$': '<rootDir>/src/navigation',
+    '^@navigation/(.*)$': '<rootDir>/src/navigation/$1',
   },
 };
