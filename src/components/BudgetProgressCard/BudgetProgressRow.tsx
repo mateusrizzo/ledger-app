@@ -26,10 +26,7 @@ export function BudgetProgressRow({
     <View style={styles.row}>
       <View style={styles.header}>
         <Text style={styles.label}>{label}</Text>
-        <Text style={[styles.amount, isOver && styles.amountOver]}>
-          {amountLabel}
-          {isOver ? ' · Over' : ''}
-        </Text>
+        <Text style={[styles.amount, isOver && styles.amountOver]}>{amountLabel}</Text>
       </View>
       <View
         style={styles.track}

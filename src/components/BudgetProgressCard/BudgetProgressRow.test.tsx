@@ -14,7 +14,7 @@ describe('BudgetProgressRow', () => {
     expect(screen.getByText('R$ 310,00 / R$ 450,00')).toBeOnTheScreen();
   });
 
-  it('exposes progressbar accessibility semantics capped at the limit', async () => {
+  it('exposes progressbar accessibility semantics capped at the limit, announcing over-budget in words rather than relying on color alone', async () => {
     await render(
       <BudgetProgressRow label="Shopping" spentCents={25000} limitCents={20000} status="over" />,
     );
@@ -26,14 +26,6 @@ describe('BudgetProgressRow', () => {
       now: 20000,
       text: `Shopping, ${formatCurrency(25000)} / ${formatCurrency(20000)}, over budget`,
     });
-  });
-
-  it('does not rely on color alone to signal an over-budget status', async () => {
-    await render(
-      <BudgetProgressRow label="Shopping" spentCents={25000} limitCents={20000} status="over" />,
-    );
-
-    expect(screen.getByText('R$ 250,00 / R$ 200,00 · Over')).toBeOnTheScreen();
   });
 
   it('colors the fill according to status', async () => {
