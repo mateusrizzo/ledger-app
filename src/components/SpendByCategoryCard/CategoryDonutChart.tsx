@@ -41,7 +41,7 @@ export function CategoryDonutChart({
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden>
       <Svg width={size} height={size}>
-        <G rotation={-90} origin={`${center}, ${center}`}>
+        <G transform={`rotate(-90, ${center}, ${center})`}>
           {segments.map(segment => {
             const dashLength = (segment.percentage / 100) * circumference;
             const dashOffset = -((cumulativePercentage / 100) * circumference);
