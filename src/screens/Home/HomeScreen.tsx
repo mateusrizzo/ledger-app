@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BalanceCard } from '@components/BalanceCard/BalanceCard';
+import { SpendByCategoryCard } from '@components/SpendByCategoryCard/SpendByCategoryCard';
 import { theme } from '@theme';
 
 export function HomeScreen(): React.JSX.Element {
@@ -16,6 +17,7 @@ export function HomeScreen(): React.JSX.Element {
       <Text style={styles.subtitle}>August 2026</Text>
 
       <BalanceCard />
+      <SpendByCategoryCard />
     </ScrollView>
   );
 }
