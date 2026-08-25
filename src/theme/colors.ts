@@ -11,6 +11,7 @@ const palette = {
   slate600: '#4E6E8C',
   mauve600: '#8A5A78',
   forest600: '#5E7A52',
+  teal600: '#2F7A66',
   grey500: '#8B8378',
   green700: '#4C7A3D',
   amber600: '#B98A2E',
@@ -35,6 +36,7 @@ export const colors = {
     transport: palette.slate600,
     shopping: palette.mauve600,
     entertainment: palette.forest600,
+    salary: palette.teal600,
     other: palette.grey500,
   },
 

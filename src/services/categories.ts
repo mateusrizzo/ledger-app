@@ -6,6 +6,7 @@ const MOCK_CATEGORIES: Category[] = [
   { id: 'transport', label: 'Transport', colorToken: 'category.transport' },
   { id: 'shopping', label: 'Shopping', colorToken: 'category.shopping' },
   { id: 'entertainment', label: 'Entertainment', colorToken: 'category.entertainment' },
+  { id: 'salary', label: 'Salary', colorToken: 'category.salary' },
   { id: 'other', label: 'Other', colorToken: 'category.other' },
 ];
 

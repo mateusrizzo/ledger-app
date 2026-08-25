@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BalanceCard } from '@components/BalanceCard/BalanceCard';
 import { BudgetProgressCard } from '@components/BudgetProgressCard/BudgetProgressCard';
+import { RecentTransactionsCard } from '@components/RecentTransactionsCard/RecentTransactionsCard';
 import { SpendByCategoryCard } from '@components/SpendByCategoryCard/SpendByCategoryCard';
 import { useCategories } from '@hooks/useCategories';
 import { theme } from '@theme';
@@ -22,6 +23,7 @@ export function HomeScreen(): React.JSX.Element {
       <BalanceCard />
       <SpendByCategoryCard />
       <BudgetProgressCard categories={categoriesQuery.data} />
+      <RecentTransactionsCard categories={categoriesQuery.data} />
     </ScrollView>
   );
 }
