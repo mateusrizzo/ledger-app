@@ -20,7 +20,7 @@ export function HomeScreen(): React.JSX.Element {
       <Text style={styles.subtitle}>August 2026</Text>
 
       <BalanceCard />
-      <SpendByCategoryCard />
+      <SpendByCategoryCard categories={categoriesQuery.data} />
       <BudgetProgressCard categories={categoriesQuery.data} />
     </ScrollView>
   );

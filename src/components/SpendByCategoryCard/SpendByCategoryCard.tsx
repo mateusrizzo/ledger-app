@@ -2,12 +2,17 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
-import { useSpendByCategory } from '@hooks/useSpendByCategory';
+import { useSpendByCategoryWithCategories } from '@hooks/useSpendByCategoryWithCategories';
+import type { Category } from '@models/category.types';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
 import { resolveColorToken } from '@utils/resolveColorToken';
 import { CategoryDonutChart } from './CategoryDonutChart';
 import { CategoryLegendRow } from './CategoryLegendRow';
+
+export interface SpendByCategoryCardProps {
+  categories: Category[] | undefined;
+}
 
 const SKELETON_LINES = [
   { widthPercent: 100, heightPx: 160 },
@@ -16,10 +21,10 @@ const SKELETON_LINES = [
   { widthPercent: 80, heightPx: 16 },
 ];
 
-export function SpendByCategoryCard(): React.JSX.Element {
-  const query = useSpendByCategory();
+export function SpendByCategoryCard({ categories }: SpendByCategoryCardProps): React.JSX.Element {
+  const spend = useSpendByCategoryWithCategories(categories);
 
-  if (query.status !== 'success') {
+  if (!spend.isReady) {
     return (
       <Card title="Spend by category">
         <CardSkeleton lines={SKELETON_LINES} />
@@ -27,18 +32,18 @@ export function SpendByCategoryCard(): React.JSX.Element {
     );
   }
 
-  const { totalCents, categories } = query.data;
+  const { totalCents, categories: spendCategories } = spend.data;
 
-  const segments = categories.map(category => ({
-    label: category.label,
+  const segments = spendCategories.map(category => ({
+    label: category.categoryLabel,
     value: category.amountCents,
     percentage: category.percentage,
-    color: resolveColorToken(category.colorToken),
+    color: resolveColorToken(category.categoryColorToken),
   }));
 
   const accessibilityLabel = [
     `Spend by category. Total ${formatCurrency(totalCents)}.`,
-    ...categories.map(category => `${category.label} ${category.percentage} percent.`),
+    ...spendCategories.map(category => `${category.categoryLabel} ${category.percentage} percent.`),
   ].join(' ');
 
   return (
@@ -50,13 +55,13 @@ export function SpendByCategoryCard(): React.JSX.Element {
           centerValue={formatCurrency(totalCents)}
         />
         <View style={styles.legend}>
-          {categories.map(category => (
+          {spendCategories.map(category => (
             <CategoryLegendRow
               key={category.id}
-              label={category.label}
+              label={category.categoryLabel}
               amountLabel={formatCurrency(category.amountCents)}
               percentage={category.percentage}
-              color={resolveColorToken(category.colorToken)}
+              color={resolveColorToken(category.categoryColorToken)}
             />
           ))}
         </View>

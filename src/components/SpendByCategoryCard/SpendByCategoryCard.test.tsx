@@ -2,6 +2,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import { getSpendByCategory } from '@services/spendByCategory';
+import type { Category } from '@models/category.types';
 import { SpendByCategoryCard } from './SpendByCategoryCard';
 
 jest.mock('@services/spendByCategory');
@@ -10,23 +11,16 @@ const mockGetSpendByCategory = getSpendByCategory as jest.MockedFunction<
   typeof getSpendByCategory
 >;
 
+const CATEGORIES: Category[] = [
+  { id: 'housing', label: 'Housing', colorToken: 'category.housing' },
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' },
+];
+
 const MOCK_RESPONSE = {
   totalCents: 244000,
   categories: [
-    {
-      id: 'housing',
-      label: 'Housing',
-      amountCents: 90000,
-      percentage: 37,
-      colorToken: 'category.housing',
-    },
-    {
-      id: 'food-dining',
-      label: 'Food & Dining',
-      amountCents: 68000,
-      percentage: 28,
-      colorToken: 'category.foodDining',
-    },
+    { id: 'spend-housing', categoryId: 'housing', amountCents: 90000, percentage: 37 },
+    { id: 'spend-food-dining', categoryId: 'food-dining', amountCents: 68000, percentage: 28 },
   ],
 };
 
@@ -46,8 +40,25 @@ describe('SpendByCategoryCard', () => {
   it('shows the skeleton while the query is pending', async () => {
     mockGetSpendByCategory.mockReturnValue(new Promise(() => {}));
 
-    await renderWithClient(<SpendByCategoryCard />);
+    await renderWithClient(<SpendByCategoryCard categories={CATEGORIES} />);
 
+    expect(
+      screen.getByTestId('card-skeleton', { includeHiddenElements: true }),
+    ).toBeTruthy();
+  });
+
+  it('shows the skeleton while categories are still undefined, even if spend resolved', async () => {
+    let spendResolved = false;
+    mockGetSpendByCategory.mockImplementation(() =>
+      Promise.resolve(MOCK_RESPONSE).then(value => {
+        spendResolved = true;
+        return value;
+      }),
+    );
+
+    await renderWithClient(<SpendByCategoryCard categories={undefined} />);
+
+    await waitFor(() => expect(spendResolved).toBe(true));
     expect(
       screen.getByTestId('card-skeleton', { includeHiddenElements: true }),
     ).toBeTruthy();
@@ -56,7 +67,7 @@ describe('SpendByCategoryCard', () => {
   it('renders the total, one donut segment and one legend row per category', async () => {
     mockGetSpendByCategory.mockResolvedValue(MOCK_RESPONSE);
 
-    await renderWithClient(<SpendByCategoryCard />);
+    await renderWithClient(<SpendByCategoryCard categories={CATEGORIES} />);
 
     await waitFor(() => expect(screen.getByText('Housing')).toBeOnTheScreen());
     expect(screen.getByText('Food & Dining')).toBeOnTheScreen();
@@ -70,7 +81,7 @@ describe('SpendByCategoryCard', () => {
   it('composes a single accessibility summary label for the whole breakdown', async () => {
     mockGetSpendByCategory.mockResolvedValue(MOCK_RESPONSE);
 
-    await renderWithClient(<SpendByCategoryCard />);
+    await renderWithClient(<SpendByCategoryCard categories={CATEGORIES} />);
 
     await waitFor(() =>
       expect(
