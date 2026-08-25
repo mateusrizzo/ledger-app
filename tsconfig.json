@@ -15,7 +15,9 @@
       "@models": ["./src/types"],
       "@models/*": ["./src/types/*"],
       "@utils": ["./src/utils"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@navigation": ["./src/navigation"],
+      "@navigation/*": ["./src/navigation/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
