@@ -10,6 +10,12 @@ import { resolveColorToken } from '@utils/resolveColorToken';
 import { CategoryDonutChart } from './CategoryDonutChart';
 import { CategoryLegendRow } from './CategoryLegendRow';
 
+export interface SpendByCategoryCardProps {
+  onSeeTrends?: () => void;
+}
+
+const NOOP = () => {};
+
 const SKELETON_LINES = [
   { widthPercent: 100, heightPx: 160 },
   { widthPercent: 90, heightPx: 16 },
@@ -17,13 +23,16 @@ const SKELETON_LINES = [
   { widthPercent: 80, heightPx: 16 },
 ];
 
-export const SpendByCategoryCard = React.memo(function SpendByCategoryCardComponent(): React.JSX.Element {
+export const SpendByCategoryCard = React.memo(function SpendByCategoryCardComponent({
+  onSeeTrends,
+}: SpendByCategoryCardProps): React.JSX.Element {
   const query = useSpendByCategory();
   useAnnounceLoading(query.status === 'pending', 'Loading spend by category');
+  const action = { label: 'See trends', onPress: onSeeTrends ?? NOOP };
 
   if (query.status !== 'success') {
     return (
-      <Card title="Spend by category">
+      <Card title="Spend by category" action={action}>
         <CardSkeleton lines={SKELETON_LINES} />
       </Card>
     );
@@ -44,7 +53,7 @@ export const SpendByCategoryCard = React.memo(function SpendByCategoryCardCompon
   ].join(' ');
 
   return (
-    <Card title="Spend by category">
+    <Card title="Spend by category" action={action}>
       <View accessible accessibilityLabel={accessibilityLabel} style={styles.content}>
         <CategoryDonutChart
           segments={segments}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,7 +15,11 @@ export function HomeScreen(): React.JSX.Element {
   const insets = useSafeAreaInsets();
   const categoriesQuery = useCategories();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const handleSeeAllTransactions = () => navigation.navigate('Transactions');
+  const handleSeeAllTransactions = useCallback(
+    () => navigation.navigate('Transactions'),
+    [navigation],
+  );
+  const handleSeeTrends = useCallback(() => navigation.navigate('SpendingTrends'), [navigation]);
 
   return (
     <ScrollView
@@ -26,7 +30,7 @@ export function HomeScreen(): React.JSX.Element {
       <Text style={styles.subtitle}>August 2026</Text>
 
       <BalanceCard />
-      <SpendByCategoryCard />
+      <SpendByCategoryCard onSeeTrends={handleSeeTrends} />
       <BudgetProgressCard categories={categoriesQuery.data} />
       <RecentTransactionsCard
         categories={categoriesQuery.data}

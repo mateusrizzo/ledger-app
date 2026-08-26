@@ -19,4 +19,8 @@ describe('resolveColorToken', () => {
   it('throws for a token that resolves to a non-leaf object', () => {
     expect(() => resolveColorToken('category')).toThrow('Unknown color token: category');
   });
+
+  it('resolves null to the neutral accent token', () => {
+    expect(resolveColorToken(null)).toBe(theme.colors.neutralAccent);
+  });
 });

@@ -8,6 +8,8 @@ import { getBalance } from '@services/balance';
 import { getBudgets } from '@services/budgets';
 import { getCategories } from '@services/categories';
 import { getSpendByCategory } from '@services/spendByCategory';
+import { getSpendingInsights } from '@services/spendingInsights';
+import { getSpendingTrends } from '@services/spendingTrends';
 import { getTransactions, getTransactionsList } from '@services/transactions';
 import { RootNavigator } from '@navigation/RootNavigator';
 
@@ -16,6 +18,8 @@ jest.mock('@services/balance');
 jest.mock('@services/budgets');
 jest.mock('@services/categories');
 jest.mock('@services/spendByCategory');
+jest.mock('@services/spendingInsights');
+jest.mock('@services/spendingTrends');
 jest.mock('@services/transactions');
 
 const mockGetAccounts = getAccounts as jest.MockedFunction<typeof getAccounts>;
@@ -23,6 +27,8 @@ const mockGetBalance = getBalance as jest.MockedFunction<typeof getBalance>;
 const mockGetBudgets = getBudgets as jest.MockedFunction<typeof getBudgets>;
 const mockGetCategories = getCategories as jest.MockedFunction<typeof getCategories>;
 const mockGetSpendByCategory = getSpendByCategory as jest.MockedFunction<typeof getSpendByCategory>;
+const mockGetSpendingInsights = getSpendingInsights as jest.MockedFunction<typeof getSpendingInsights>;
+const mockGetSpendingTrends = getSpendingTrends as jest.MockedFunction<typeof getSpendingTrends>;
 const mockGetTransactions = getTransactions as jest.MockedFunction<typeof getTransactions>;
 const mockGetTransactionsList = getTransactionsList as jest.MockedFunction<typeof getTransactionsList>;
 
@@ -75,6 +81,12 @@ describe('HomeScreen navigation', () => {
     });
     mockGetTransactions.mockResolvedValue({ transactions: [TRANSACTION], hasMore: false });
     mockGetTransactionsList.mockResolvedValue({ transactions: [TRANSACTION], page: 0, hasMore: false });
+    mockGetSpendingTrends.mockResolvedValue({
+      months: [{ month: '2026-08-01', amountCents: 8540, isCurrent: true }],
+      monthlyAverageCents: 8540,
+      deltaVsAveragePercent: 0,
+    });
+    mockGetSpendingInsights.mockResolvedValue({ insights: [], basedOnMonths: 6 });
   });
 
   afterEach(() => {
@@ -88,5 +100,14 @@ describe('HomeScreen navigation', () => {
     fireEvent.press(screen.getByText('See all'));
 
     await waitFor(() => expect(screen.getByText('Transactions')).toBeOnTheScreen());
+  });
+
+  it('navigates to the Spending Trends screen when See trends is pressed', async () => {
+    await renderApp();
+
+    await waitFor(() => expect(screen.getByText('See trends')).toBeOnTheScreen());
+    fireEvent.press(screen.getByText('See trends'));
+
+    await waitFor(() => expect(screen.getByText('Spending Trends')).toBeOnTheScreen());
   });
 });

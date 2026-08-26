@@ -56,6 +56,8 @@ export const colors = {
     positive: palette.green700,
     negative: palette.red700,
   },
+
+  neutralAccent: palette.brown400, // fallback dot color for insights not tied to one category
 } as const;
 
 export type ColorToken = string;
