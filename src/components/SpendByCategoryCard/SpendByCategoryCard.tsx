@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import { useSpendByCategory } from '@hooks/useSpendByCategory';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
@@ -15,6 +17,7 @@ export interface SpendByCategoryCardProps {
 }
 
 const NOOP = () => {};
+const ENTRANCE_TRANSLATE_Y = 12;
 
 const SKELETON_LINES = [
   { widthPercent: 100, heightPx: 160 },
@@ -29,6 +32,11 @@ export const SpendByCategoryCard = React.memo(function SpendByCategoryCardCompon
   const query = useSpendByCategory();
   useAnnounceLoading(query.status === 'pending', 'Loading spend by category');
   const action = { label: 'See trends', onPress: onSeeTrends ?? NOOP };
+  const { progress } = useEntranceAnimation(query.status === 'success');
+  const entranceStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * ENTRANCE_TRANSLATE_Y }],
+  }));
 
   if (query.status !== 'success') {
     return (
@@ -54,24 +62,26 @@ export const SpendByCategoryCard = React.memo(function SpendByCategoryCardCompon
 
   return (
     <Card title="Spend by category" action={action}>
-      <View accessible accessibilityLabel={accessibilityLabel} style={styles.content}>
-        <CategoryDonutChart
-          segments={segments}
-          centerLabel="Total"
-          centerValue={formatCurrency(totalCents)}
-        />
-        <View style={styles.legend}>
-          {categories.map(category => (
-            <CategoryLegendRow
-              key={category.id}
-              label={category.label}
-              amountLabel={formatCurrency(category.amountCents)}
-              percentage={category.percentage}
-              color={resolveColorToken(category.colorToken)}
-            />
-          ))}
+      <Animated.View style={entranceStyle}>
+        <View accessible accessibilityLabel={accessibilityLabel} style={styles.content}>
+          <CategoryDonutChart
+            segments={segments}
+            centerLabel="Total"
+            centerValue={formatCurrency(totalCents)}
+          />
+          <View style={styles.legend}>
+            {categories.map(category => (
+              <CategoryLegendRow
+                key={category.id}
+                label={category.label}
+                amountLabel={formatCurrency(category.amountCents)}
+                percentage={category.percentage}
+                color={resolveColorToken(category.colorToken)}
+              />
+            ))}
+          </View>
         </View>
-      </View>
+      </Animated.View>
     </Card>
   );
 });

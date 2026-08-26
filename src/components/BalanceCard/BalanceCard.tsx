@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useBalance } from '@hooks/useBalance';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
 
@@ -13,9 +15,16 @@ const SKELETON_LINES = [
   { widthPercent: 45, heightPx: 16 },
 ];
 
+const ENTRANCE_TRANSLATE_Y = 12;
+
 export const BalanceCard = React.memo(function BalanceCardComponent(): React.JSX.Element {
   const query = useBalance();
   useAnnounceLoading(query.status === 'pending', 'Loading balance');
+  const { progress } = useEntranceAnimation(query.status === 'success');
+  const entranceStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * ENTRANCE_TRANSLATE_Y }],
+  }));
 
   if (query.status !== 'success') {
     return (
@@ -34,13 +43,15 @@ export const BalanceCard = React.memo(function BalanceCardComponent(): React.JSX
 
   return (
     <Card>
-      <View accessible accessibilityLabel={accessibilityLabel}>
-        <Text style={styles.label}>Total balance</Text>
-        <Text style={styles.amount}>{totalAmount}</Text>
-        <Text style={[styles.delta, isPositive ? styles.positive : styles.negative]}>
-          {isPositive ? '↑' : '↓'} {deltaAmount} this month
-        </Text>
-      </View>
+      <Animated.View style={entranceStyle}>
+        <View accessible accessibilityLabel={accessibilityLabel}>
+          <Text style={styles.label}>Total balance</Text>
+          <Text style={styles.amount}>{totalAmount}</Text>
+          <Text style={[styles.delta, isPositive ? styles.positive : styles.negative]}>
+            {isPositive ? '↑' : '↓'} {deltaAmount} this month
+          </Text>
+        </View>
+      </Animated.View>
     </Card>
   );
 });

@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import Svg, { Circle, G } from 'react-native-svg';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import { theme } from '@theme';
 
 export interface DonutChartSegment {
@@ -20,6 +22,50 @@ export interface CategoryDonutChartProps {
 
 const DEFAULT_SIZE = 180;
 const DEFAULT_STROKE_WIDTH = 24;
+const SEGMENT_STAGGER_MS = 60;
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+interface AnimatedSegmentProps {
+  segment: DonutChartSegment;
+  index: number;
+  center: number;
+  radius: number;
+  strokeWidth: number;
+  circumference: number;
+  dashLength: number;
+  dashOffset: number;
+}
+
+function AnimatedSegment({
+  segment,
+  index,
+  center,
+  radius,
+  strokeWidth,
+  circumference,
+  dashLength,
+  dashOffset,
+}: AnimatedSegmentProps): React.JSX.Element {
+  const { progress } = useEntranceAnimation(true, index * SEGMENT_STAGGER_MS);
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDasharray: `${dashLength * progress.value} ${circumference}`,
+  }));
+
+  return (
+    <AnimatedCircle
+      testID={`category-donut-chart-segment-${segment.label}`}
+      cx={center}
+      cy={center}
+      r={radius}
+      fill="none"
+      stroke={segment.color}
+      strokeWidth={strokeWidth}
+      strokeDashoffset={dashOffset}
+      animatedProps={animatedProps}
+    />
+  );
+}
 
 export function CategoryDonutChart({
   segments,
@@ -42,23 +88,22 @@ export function CategoryDonutChart({
       accessibilityElementsHidden>
       <Svg width={size} height={size}>
         <G transform={`rotate(-90, ${center}, ${center})`}>
-          {segments.map(segment => {
+          {segments.map((segment, index) => {
             const dashLength = (segment.percentage / 100) * circumference;
             const dashOffset = -((cumulativePercentage / 100) * circumference);
             cumulativePercentage += segment.percentage;
 
             return (
-              <Circle
+              <AnimatedSegment
                 key={segment.label}
-                testID={`category-donut-chart-segment-${segment.label}`}
-                cx={center}
-                cy={center}
-                r={radius}
-                fill="none"
-                stroke={segment.color}
+                segment={segment}
+                index={index}
+                center={center}
+                radius={radius}
                 strokeWidth={strokeWidth}
-                strokeDasharray={`${dashLength} ${circumference}`}
-                strokeDashoffset={dashOffset}
+                circumference={circumference}
+                dashLength={dashLength}
+                dashOffset={dashOffset}
               />
             );
           })}

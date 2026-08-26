@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useBudgetsWithCategories } from '@hooks/useBudgetsWithCategories';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import type { Category } from '@models/category.types';
 import { theme } from '@theme';
 import { BudgetProgressRow } from './BudgetProgressRow';
@@ -11,6 +13,8 @@ import { BudgetProgressRow } from './BudgetProgressRow';
 export interface BudgetProgressCardProps {
   categories: Category[] | undefined;
 }
+
+const ENTRANCE_TRANSLATE_Y = 12;
 
 const SKELETON_LINES = [
   { widthPercent: 60, heightPx: 14 },
@@ -26,6 +30,11 @@ export const BudgetProgressCard = React.memo(function BudgetProgressCardComponen
 }: BudgetProgressCardProps): React.JSX.Element {
   const budgets = useBudgetsWithCategories(categories);
   useAnnounceLoading(!budgets.isReady && !budgets.isError, 'Loading budget progress');
+  const { progress } = useEntranceAnimation(budgets.isReady);
+  const entranceStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * ENTRANCE_TRANSLATE_Y }],
+  }));
 
   if (!budgets.isReady) {
     return (
@@ -37,7 +46,7 @@ export const BudgetProgressCard = React.memo(function BudgetProgressCardComponen
 
   return (
     <Card title="Budget progress">
-      <View style={styles.list}>
+      <Animated.View style={[styles.list, entranceStyle]}>
         {budgets.data.map(budget => (
           <BudgetProgressRow
             key={budget.id}
@@ -47,7 +56,7 @@ export const BudgetProgressCard = React.memo(function BudgetProgressCardComponen
             status={budget.status}
           />
         ))}
-      </View>
+      </Animated.View>
     </Card>
   );
 });
