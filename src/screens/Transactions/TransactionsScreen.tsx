@@ -7,6 +7,7 @@ import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { FilterBar } from '@components/FilterBar/FilterBar';
 import { TransactionRow } from '@components/RecentTransactionsCard/TransactionRow';
 import { useAccounts } from '@hooks/useAccounts';
+import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useCategories } from '@hooks/useCategories';
 import { useTransactionsList } from '@hooks/useTransactionsList';
 import type { Transaction } from '@models/transaction.types';
@@ -78,6 +79,8 @@ export function TransactionsScreen(): React.JSX.Element {
     transactionsList.status === 'error' ||
     categoriesQuery.status === 'error' ||
     accountsQuery.status === 'error';
+
+  useAnnounceLoading(isInitialLoading, 'Loading transactions');
 
   function handleEndReached() {
     if (transactionsList.hasNextPage && !transactionsList.isFetchingNextPage) {

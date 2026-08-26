@@ -1,4 +1,5 @@
 import type { Category } from '@models/category.types';
+import { getInitials } from './getInitials';
 
 export interface CategoryMeta {
   label: string;
@@ -24,6 +25,6 @@ export function getCategoryMeta(
   return {
     label: category.label,
     colorToken: category.colorToken,
-    initials: category.label.slice(0, 2),
+    initials: getInitials(category.label),
   };
 }

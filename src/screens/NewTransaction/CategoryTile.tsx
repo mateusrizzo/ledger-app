@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { CategoryBadge } from '@components/CategoryBadge/CategoryBadge';
 import type { Category } from '@models/category.types';
 import { theme } from '@theme';
+import { getInitials } from '@utils/getInitials';
 import { resolveColorToken } from '@utils/resolveColorToken';
 
 export interface CategoryTileProps {
@@ -23,7 +24,7 @@ export const CategoryTile = React.memo(function CategoryTileComponent({
       accessibilityRole="radio"
       accessibilityState={{ checked: selected }}
       accessibilityLabel={category.label}>
-      <CategoryBadge initials={category.label.slice(0, 2)} color={resolveColorToken(category.colorToken)} />
+      <CategoryBadge initials={getInitials(category.label)} color={resolveColorToken(category.colorToken)} />
       <Text style={styles.label} numberOfLines={1}>
         {category.label}
       </Text>
