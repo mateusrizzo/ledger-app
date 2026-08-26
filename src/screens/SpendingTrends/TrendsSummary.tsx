@@ -14,9 +14,12 @@ export function TrendsSummary({
 }: TrendsSummaryProps): React.JSX.Element {
   const isAboveAverage = deltaVsAveragePercent >= 0;
   const deltaLabel = `${isAboveAverage ? '+' : ''}${deltaVsAveragePercent}% vs avg`;
+  const summaryAccessibilityLabel = `Last 6 months. Monthly average ${formatCurrency(
+    monthlyAverageCents,
+  )}, ${Math.abs(deltaVsAveragePercent)} percent ${isAboveAverage ? 'above' : 'below'} average.`;
 
   return (
-    <View style={styles.header}>
+    <View style={styles.header} accessible accessibilityLabel={summaryAccessibilityLabel}>
       <View style={styles.headerRow}>
         <Text style={styles.title} accessibilityRole="header">
           Last 6 months

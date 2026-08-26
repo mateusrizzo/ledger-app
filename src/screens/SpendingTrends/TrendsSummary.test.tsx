@@ -16,4 +16,12 @@ describe('TrendsSummary', () => {
 
     expect(screen.getByText('-3% vs avg')).toBeOnTheScreen();
   });
+
+  it('composes a single accessibility summary label for the whole header', async () => {
+    await render(<TrendsSummary monthlyAverageCents={240667} deltaVsAveragePercent={1} />);
+
+    expect(
+      screen.getByLabelText('Last 6 months. Monthly average R$ 2.406,67, 1 percent above average.'),
+    ).toBeOnTheScreen();
+  });
 });

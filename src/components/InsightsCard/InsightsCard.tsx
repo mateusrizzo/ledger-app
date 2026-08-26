@@ -17,7 +17,7 @@ const SKELETON_LINES = [
   { widthPercent: 100, heightPx: 32 },
 ];
 
-export function InsightsCard(): React.JSX.Element {
+export const InsightsCard = React.memo(function InsightsCardComponent(): React.JSX.Element {
   const insights = useInsightsWithCategories();
   useAnnounceLoading(!insights.isReady && !insights.isError, 'Loading insights');
 
@@ -44,7 +44,7 @@ export function InsightsCard(): React.JSX.Element {
       <InsightsDisclaimer basedOnMonths={insights.basedOnMonths} />
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   list: {
