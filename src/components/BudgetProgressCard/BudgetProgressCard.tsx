@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
+import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useBudgetsWithCategories } from '@hooks/useBudgetsWithCategories';
 import type { Category } from '@models/category.types';
 import { theme } from '@theme';
@@ -20,8 +21,11 @@ const SKELETON_LINES = [
   { widthPercent: 100, heightPx: 8 },
 ];
 
-export function BudgetProgressCard({ categories }: BudgetProgressCardProps): React.JSX.Element {
+export const BudgetProgressCard = React.memo(function BudgetProgressCardComponent({
+  categories,
+}: BudgetProgressCardProps): React.JSX.Element {
   const budgets = useBudgetsWithCategories(categories);
+  useAnnounceLoading(!budgets.isReady && !budgets.isError, 'Loading budget progress');
 
   if (!budgets.isReady) {
     return (
@@ -46,7 +50,7 @@ export function BudgetProgressCard({ categories }: BudgetProgressCardProps): Rea
       </View>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   list: {

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
+import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useSpendByCategory } from '@hooks/useSpendByCategory';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
@@ -16,8 +17,9 @@ const SKELETON_LINES = [
   { widthPercent: 80, heightPx: 16 },
 ];
 
-export function SpendByCategoryCard(): React.JSX.Element {
+export const SpendByCategoryCard = React.memo(function SpendByCategoryCardComponent(): React.JSX.Element {
   const query = useSpendByCategory();
+  useAnnounceLoading(query.status === 'pending', 'Loading spend by category');
 
   if (query.status !== 'success') {
     return (
@@ -63,7 +65,7 @@ export function SpendByCategoryCard(): React.JSX.Element {
       </View>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   content: {

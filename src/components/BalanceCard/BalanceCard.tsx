@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
+import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useBalance } from '@hooks/useBalance';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
@@ -12,8 +13,9 @@ const SKELETON_LINES = [
   { widthPercent: 45, heightPx: 16 },
 ];
 
-export function BalanceCard(): React.JSX.Element {
+export const BalanceCard = React.memo(function BalanceCardComponent(): React.JSX.Element {
   const query = useBalance();
+  useAnnounceLoading(query.status === 'pending', 'Loading balance');
 
   if (query.status !== 'success') {
     return (
@@ -41,7 +43,7 @@ export function BalanceCard(): React.JSX.Element {
       </View>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   label: {

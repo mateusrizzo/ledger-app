@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
+import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
 import { useTransactionsWithCategories } from '@hooks/useTransactionsWithCategories';
 import type { Category } from '@models/category.types';
 import { theme } from '@theme';
@@ -27,12 +28,13 @@ const SKELETON_LINES = [
   { widthPercent: 35, heightPx: 12 },
 ];
 
-export function RecentTransactionsCard({
+export const RecentTransactionsCard = React.memo(function RecentTransactionsCardComponent({
   categories,
   onSeeAll,
 }: RecentTransactionsCardProps): React.JSX.Element {
   const transactions = useTransactionsWithCategories(categories);
   const action = { label: 'See all', onPress: onSeeAll ?? NOOP };
+  useAnnounceLoading(!transactions.isReady && !transactions.isError, 'Loading recent transactions');
 
   if (!transactions.isReady) {
     return (
@@ -59,7 +61,7 @@ export function RecentTransactionsCard({
       </View>
     </Card>
   );
-}
+});
 
 const styles = StyleSheet.create({
   list: {
