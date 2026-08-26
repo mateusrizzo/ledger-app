@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -53,7 +53,9 @@ export function SpendingTrendsScreen(): React.JSX.Element {
         <View style={styles.headerSide} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}>
         <Card>
           {trendsQuery.status !== 'success' ? (
             <CardSkeleton lines={SKELETON_LINES} />
@@ -71,7 +73,7 @@ export function SpendingTrendsScreen(): React.JSX.Element {
         </Card>
 
         <InsightsCard />
-      </View>
+      </ScrollView>
     </View>
   );
 }
