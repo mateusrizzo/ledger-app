@@ -13,6 +13,9 @@ const palette = {
   forest600: '#5E7A52',
   teal600: '#2F7A66',
   grey500: '#8B8378',
+  indigo600: '#5B5EA6',
+  cyan600: '#3E8E8E',
+  mustard600: '#B08D2B',
   green700: '#4C7A3D',
   amber600: '#B98A2E',
   red700: '#A13B2E',
@@ -38,6 +41,9 @@ export const colors = {
     entertainment: palette.forest600,
     salary: palette.teal600,
     other: palette.grey500,
+    health: palette.indigo600,
+    utilities: palette.cyan600,
+    subscriptions: palette.mustard600,
   },
 
   status: {

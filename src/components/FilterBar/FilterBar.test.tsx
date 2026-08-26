@@ -6,7 +6,7 @@ import { FilterBar } from './FilterBar';
 
 const ACCOUNTS: Account[] = [{ id: 'checking', name: 'Checking' }];
 const CATEGORIES: Category[] = [
-  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' },
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining', kind: 'expense' },
 ];
 const MONTHS = [{ value: '2026-08', label: 'August 2026' }];
 

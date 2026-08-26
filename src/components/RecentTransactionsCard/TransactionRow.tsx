@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { CategoryBadge } from '@components/CategoryBadge/CategoryBadge';
 import { theme } from '@theme';
 import { formatCurrency } from '@utils/formatCurrency';
 
@@ -26,9 +27,7 @@ export function TransactionRow({
 
   return (
     <View style={styles.row} accessible accessibilityLabel={accessibilityLabel}>
-      <View style={[styles.avatar, { backgroundColor: color }]}>
-        <Text style={styles.avatarText}>{categoryInitials}</Text>
-      </View>
+      <CategoryBadge initials={categoryInitials} color={color} />
       <View style={styles.details}>
         <Text style={styles.merchant} numberOfLines={1}>
           {merchant}
@@ -49,17 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing.md,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    ...theme.typography.cardAction,
-    color: theme.colors.surface,
   },
   details: {
     flex: 1,

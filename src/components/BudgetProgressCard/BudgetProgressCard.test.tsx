@@ -10,8 +10,8 @@ jest.mock('@services/budgets');
 const mockGetBudgets = getBudgets as jest.MockedFunction<typeof getBudgets>;
 
 const CATEGORIES: Category[] = [
-  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' },
-  { id: 'transport', label: 'Transport', colorToken: 'category.transport' },
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining', kind: 'expense' },
+  { id: 'transport', label: 'Transport', colorToken: 'category.transport', kind: 'expense' },
 ];
 
 const BUDGETS = [

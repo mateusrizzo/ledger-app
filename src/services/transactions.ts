@@ -1,4 +1,5 @@
 import type {
+  CreateTransactionPayload,
   RecentTransactionsResponse,
   Transaction,
   TransactionsListParams,
@@ -11,7 +12,7 @@ function daysAgo(days: number): string {
   return date.toISOString();
 }
 
-function getMockTransactions(): Transaction[] {
+function seedTransactions(): Transaction[] {
   return [
     { id: 'txn-grocery-store', merchant: 'Grocery Store', categoryId: 'food-dining', accountId: 'checking', amountCents: -8540, date: daysAgo(0) },
     { id: 'txn-salary-deposit', merchant: 'Salary Deposit', categoryId: 'salary', accountId: 'checking', amountCents: 320000, date: daysAgo(0) },
@@ -36,6 +37,22 @@ function getMockTransactions(): Transaction[] {
   ];
 }
 
+// Lazily seeded once per app session so created transactions persist across
+// subsequent fetches (simulating a real backend), rather than the mock data
+// being regenerated fresh on every call.
+let transactionsStore: Transaction[] | undefined;
+
+function getStore(): Transaction[] {
+  if (transactionsStore === undefined) {
+    transactionsStore = seedTransactions();
+  }
+  return transactionsStore;
+}
+
+function getSortedTransactions(): Transaction[] {
+  return [...getStore()].sort((a, b) => b.date.localeCompare(a.date));
+}
+
 function getMonthKey(isoDate: string): string {
   const date = new Date(isoDate);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -47,7 +64,7 @@ const MOCK_DELAY_MS = 600;
 export function getTransactions(): Promise<RecentTransactionsResponse> {
   return new Promise(resolve => {
     setTimeout(() => {
-      const transactions = getMockTransactions();
+      const transactions = getSortedTransactions();
       resolve({
         transactions: transactions.slice(0, RECENT_TRANSACTIONS_COUNT),
         hasMore: transactions.length > RECENT_TRANSACTIONS_COUNT,
@@ -63,7 +80,7 @@ export function getTransactionsList(
     setTimeout(() => {
       const { page, pageSize, accountId, categoryId, month } = params;
 
-      const filtered = getMockTransactions().filter(transaction => {
+      const filtered = getSortedTransactions().filter(transaction => {
         if (accountId && transaction.accountId !== accountId) {
           return false;
         }
@@ -84,6 +101,27 @@ export function getTransactionsList(
         page,
         hasMore: start + pageSize < filtered.length,
       });
+    }, MOCK_DELAY_MS);
+  });
+}
+
+export function createTransaction(payload: CreateTransactionPayload): Promise<Transaction> {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const signedAmountCents =
+        payload.type === 'expense' ? -Math.abs(payload.amountCents) : Math.abs(payload.amountCents);
+
+      const transaction: Transaction = {
+        id: `txn-${Date.now()}`,
+        merchant: payload.description?.trim() || 'Transaction',
+        categoryId: payload.categoryId,
+        accountId: payload.accountId,
+        amountCents: signedAmountCents,
+        date: payload.date,
+      };
+
+      getStore().push(transaction);
+      resolve(transaction);
     }, MOCK_DELAY_MS);
   });
 }
