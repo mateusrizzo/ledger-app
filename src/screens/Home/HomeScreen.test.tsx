@@ -26,7 +26,9 @@ const mockGetSpendByCategory = getSpendByCategory as jest.MockedFunction<typeof 
 const mockGetTransactions = getTransactions as jest.MockedFunction<typeof getTransactions>;
 const mockGetTransactionsList = getTransactionsList as jest.MockedFunction<typeof getTransactionsList>;
 
-const CATEGORIES = [{ id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' }];
+const CATEGORIES = [
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining', kind: 'expense' as const },
+];
 
 const TRANSACTION = {
   id: 'txn-grocery-store',

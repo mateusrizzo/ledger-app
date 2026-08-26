@@ -7,6 +7,11 @@ import { getCategories } from '@services/categories';
 import { getTransactionsList } from '@services/transactions';
 import { TransactionsScreen } from './TransactionsScreen';
 
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => ({ navigate: mockNavigate }),
+}));
+
 jest.mock('@services/accounts');
 jest.mock('@services/categories');
 jest.mock('@services/transactions');
@@ -16,7 +21,9 @@ const mockGetCategories = getCategories as jest.MockedFunction<typeof getCategor
 const mockGetTransactionsList = getTransactionsList as jest.MockedFunction<typeof getTransactionsList>;
 
 const ACCOUNTS = [{ id: 'checking', name: 'Checking' }];
-const CATEGORIES = [{ id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' }];
+const CATEGORIES = [
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining', kind: 'expense' as const },
+];
 
 const GROCERY_TXN = {
   id: 'txn-grocery-store',
@@ -122,5 +129,16 @@ describe('TransactionsScreen', () => {
         expect.objectContaining({ accountId: 'checking' }),
       ),
     );
+  });
+
+  it('navigates to NewTransaction when the "+" button is pressed', async () => {
+    mockGetTransactionsList.mockResolvedValue({ transactions: [GROCERY_TXN], page: 0, hasMore: false });
+
+    await renderWithClient(<TransactionsScreen />);
+
+    await waitFor(() => expect(screen.getByText('Grocery Store')).toBeOnTheScreen());
+    fireEvent.press(screen.getByLabelText('New transaction'));
+
+    expect(mockNavigate).toHaveBeenCalledWith('NewTransaction');
   });
 });

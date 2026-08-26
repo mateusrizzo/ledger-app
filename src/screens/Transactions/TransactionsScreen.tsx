@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, SectionList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, SectionList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { FilterBar } from '@components/FilterBar/FilterBar';
 import { TransactionRow } from '@components/RecentTransactionsCard/TransactionRow';
@@ -8,6 +10,7 @@ import { useAccounts } from '@hooks/useAccounts';
 import { useCategories } from '@hooks/useCategories';
 import { useTransactionsList } from '@hooks/useTransactionsList';
 import type { Transaction } from '@models/transaction.types';
+import type { RootStackParamList } from '@navigation/types';
 import { theme } from '@theme';
 import { formatRelativeDate } from '@utils/formatRelativeDate';
 import { getCategoryMeta } from '@utils/getCategoryMeta';
@@ -31,6 +34,7 @@ const SKELETON_LINES = [
 
 export function TransactionsScreen(): React.JSX.Element {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const monthOptions = useMemo(() => getRecentMonthOptions(), []);
 
   const [accountId, setAccountId] = useState<string | undefined>(undefined);
@@ -151,6 +155,14 @@ export function TransactionsScreen(): React.JSX.Element {
           }
         />
       )}
+
+      <TouchableOpacity
+        style={[styles.fab, { bottom: insets.bottom + theme.spacing.lg }]}
+        onPress={() => navigation.navigate('NewTransaction')}
+        accessibilityRole="button"
+        accessibilityLabel="New transaction">
+        <Text style={styles.fabLabel}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -168,6 +180,27 @@ const styles = StyleSheet.create({
   },
   filterBarWrapper: {
     marginBottom: theme.spacing.lg,
+  },
+  fab: {
+    position: 'absolute',
+    right: theme.spacing.lg,
+    width: 56,
+    height: 56,
+    borderRadius: theme.radius.full,
+    backgroundColor: theme.colors.text.link,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  fabLabel: {
+    fontSize: 28,
+    fontWeight: '600',
+    lineHeight: 30,
+    color: theme.colors.surface,
   },
   listContent: {
     paddingBottom: theme.spacing.lg,

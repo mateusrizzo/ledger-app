@@ -10,8 +10,8 @@ jest.mock('@services/transactions');
 const mockGetTransactions = getTransactions as jest.MockedFunction<typeof getTransactions>;
 
 const CATEGORIES: Category[] = [
-  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining' },
-  { id: 'salary', label: 'Salary', colorToken: 'category.salary' },
+  { id: 'food-dining', label: 'Food & Dining', colorToken: 'category.foodDining', kind: 'expense' },
+  { id: 'salary', label: 'Salary', colorToken: 'category.salary', kind: 'income' },
 ];
 
 const TRANSACTIONS_RESPONSE = {

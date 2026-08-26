@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from '@screens/Home/HomeScreen';
+import { NewTransactionScreen } from '@screens/NewTransaction/NewTransactionScreen';
 import { TransactionsScreen } from '@screens/Transactions/TransactionsScreen';
 import type { RootStackParamList } from './types';
 
@@ -11,6 +12,11 @@ export function RootNavigator(): React.JSX.Element {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Transactions" component={TransactionsScreen} />
+      <Stack.Screen
+        name="NewTransaction"
+        component={NewTransactionScreen}
+        options={{ presentation: 'modal' }}
+      />
     </Stack.Navigator>
   );
 }
