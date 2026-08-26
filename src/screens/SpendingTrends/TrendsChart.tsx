@@ -1,5 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import type { MonthlySpend } from '@models/spendingTrends.types';
 import { theme } from '@theme';
 
@@ -8,6 +10,7 @@ export interface TrendsChartProps {
 }
 
 const CHART_HEIGHT = 120;
+const BAR_STAGGER_MS = 60;
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function formatMonthLabel(monthIso: string): string {
@@ -20,6 +23,25 @@ function formatCompactAmount(amountCents: number): string {
   return `${thousands.toFixed(1).replace('.', ',')}k`;
 }
 
+interface AnimatedBarProps {
+  index: number;
+  height: number;
+  isCurrent: boolean;
+}
+
+function AnimatedBar({ index, height, isCurrent }: AnimatedBarProps): React.JSX.Element {
+  const { progress } = useEntranceAnimation(true, index * BAR_STAGGER_MS);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scaleY: progress.value }],
+  }));
+
+  return (
+    <Animated.View
+      style={[styles.bar, { height }, isCurrent ? styles.barCurrent : null, animatedStyle]}
+    />
+  );
+}
+
 export function TrendsChart({ months }: TrendsChartProps): React.JSX.Element {
   const maxAmountCents = Math.max(...months.map(month => month.amountCents));
 
@@ -29,7 +51,7 @@ export function TrendsChart({ months }: TrendsChartProps): React.JSX.Element {
       style={styles.chart}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden>
-      {months.map(month => {
+      {months.map((month, index) => {
         const barHeight = maxAmountCents === 0 ? 0 : (month.amountCents / maxAmountCents) * CHART_HEIGHT;
 
         return (
@@ -38,7 +60,7 @@ export function TrendsChart({ months }: TrendsChartProps): React.JSX.Element {
               {formatCompactAmount(month.amountCents)}
             </Text>
             <View style={styles.barTrack}>
-              <View style={[styles.bar, { height: barHeight }, month.isCurrent ? styles.barCurrent : null]} />
+              <AnimatedBar index={index} height={barHeight} isCurrent={month.isCurrent} />
             </View>
             <Text style={[styles.monthLabel, month.isCurrent ? styles.monthLabelCurrent : null]}>
               {formatMonthLabel(month.month)}
@@ -80,6 +102,7 @@ const styles = StyleSheet.create({
     minHeight: 4,
     borderRadius: theme.radius.sm,
     backgroundColor: theme.colors.border,
+    transformOrigin: 'bottom',
   },
   barCurrent: {
     backgroundColor: theme.colors.text.link,

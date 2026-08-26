@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Card } from '@components/Card/Card';
 import { CardSkeleton } from '@components/CardSkeleton/CardSkeleton';
 import { useAnnounceLoading } from '@hooks/useAnnounceLoading';
+import { useEntranceAnimation } from '@hooks/useEntranceAnimation';
 import { useTransactionsWithCategories } from '@hooks/useTransactionsWithCategories';
 import type { Category } from '@models/category.types';
 import { theme } from '@theme';
@@ -16,6 +18,7 @@ export interface RecentTransactionsCardProps {
 }
 
 const NOOP = () => {};
+const ENTRANCE_TRANSLATE_Y = 12;
 
 const SKELETON_LINES = [
   { widthPercent: 55, heightPx: 14 },
@@ -35,6 +38,11 @@ export const RecentTransactionsCard = React.memo(function RecentTransactionsCard
   const transactions = useTransactionsWithCategories(categories);
   const action = { label: 'See all', onPress: onSeeAll ?? NOOP };
   useAnnounceLoading(!transactions.isReady && !transactions.isError, 'Loading recent transactions');
+  const { progress } = useEntranceAnimation(transactions.isReady);
+  const entranceStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (1 - progress.value) * ENTRANCE_TRANSLATE_Y }],
+  }));
 
   if (!transactions.isReady) {
     return (
@@ -46,7 +54,7 @@ export const RecentTransactionsCard = React.memo(function RecentTransactionsCard
 
   return (
     <Card title="Recent transactions" action={action}>
-      <View style={styles.list}>
+      <Animated.View style={[styles.list, entranceStyle]}>
         {transactions.data.map(transaction => (
           <TransactionRow
             key={transaction.id}
@@ -58,7 +66,7 @@ export const RecentTransactionsCard = React.memo(function RecentTransactionsCard
             amountCents={transaction.amountCents}
           />
         ))}
-      </View>
+      </Animated.View>
     </Card>
   );
 });
