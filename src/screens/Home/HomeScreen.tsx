@@ -16,6 +16,7 @@ export function HomeScreen(): React.JSX.Element {
   const categoriesQuery = useCategories();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const handleSeeAllTransactions = () => navigation.navigate('Transactions');
+  const handleSeeTrends = () => navigation.navigate('SpendingTrends');
 
   return (
     <ScrollView
@@ -26,7 +27,7 @@ export function HomeScreen(): React.JSX.Element {
       <Text style={styles.subtitle}>August 2026</Text>
 
       <BalanceCard />
-      <SpendByCategoryCard />
+      <SpendByCategoryCard onSeeTrends={handleSeeTrends} />
       <BudgetProgressCard categories={categoriesQuery.data} />
       <RecentTransactionsCard
         categories={categoriesQuery.data}

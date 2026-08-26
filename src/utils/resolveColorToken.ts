@@ -1,6 +1,10 @@
 import { theme } from '@theme';
 
-export function resolveColorToken(token: string): string {
+export function resolveColorToken(token: string | null): string {
+  if (token === null) {
+    return theme.colors.neutralAccent;
+  }
+
   const value: unknown = token
     .split('.')
     .reduce<unknown>(

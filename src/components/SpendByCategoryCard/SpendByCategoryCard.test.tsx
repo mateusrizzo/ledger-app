@@ -1,6 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { getSpendByCategory } from '@services/spendByCategory';
 import { SpendByCategoryCard } from './SpendByCategoryCard';
 
@@ -65,6 +65,25 @@ describe('SpendByCategoryCard', () => {
     expect(
       screen.getAllByText('R$ 2.440,00', { includeHiddenElements: true }),
     ).toHaveLength(1);
+  });
+
+  it('always renders the See trends action, even while loading', async () => {
+    mockGetSpendByCategory.mockReturnValue(new Promise(() => {}));
+
+    await renderWithClient(<SpendByCategoryCard />);
+
+    expect(screen.getByText('See trends')).toBeOnTheScreen();
+  });
+
+  it('fires onSeeTrends when the See trends action is pressed', async () => {
+    const onSeeTrends = jest.fn();
+    mockGetSpendByCategory.mockResolvedValue(MOCK_RESPONSE);
+
+    await renderWithClient(<SpendByCategoryCard onSeeTrends={onSeeTrends} />);
+
+    await waitFor(() => expect(screen.getByText('Housing')).toBeOnTheScreen());
+    fireEvent.press(screen.getByText('See trends'));
+    expect(onSeeTrends).toHaveBeenCalledTimes(1);
   });
 
   it('composes a single accessibility summary label for the whole breakdown', async () => {
